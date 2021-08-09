@@ -43,11 +43,11 @@ const BoxDecoration _kDefaultRoundedBorderDecoration = BoxDecoration(
     darkColor: CupertinoColors.black,
   ),
   border: _kDefaultRoundedBorder,
-  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+  borderRadius: BorderRadius.all(Radius.circular(4.0)),
 );
 
 const BoxDecoration _kDefaultFocusedBorderDecoration = BoxDecoration(
-  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+  borderRadius: BorderRadius.all(Radius.circular(4.0)),
 );
 
 const Color _kDisabledBackground = CupertinoDynamicColor.withBrightness(
@@ -225,7 +225,7 @@ class MacosTextField extends StatefulWidget {
   ///  * [expands], to allow the widget to size itself to its parent's height.
   ///  * [maxLength], which discusses the precise meaning of "number of
   ///    characters" and how it may differ from the intuitive meaning.
-  const MacosTextField({
+  MacosTextField({
     Key? key,
     this.controller,
     this.focusNode,
@@ -285,6 +285,7 @@ class MacosTextField extends StatefulWidget {
     this.scrollPhysics,
     this.autofillHints,
     this.restorationId,
+    Color? disabledColor,
   })  : smartDashesType = smartDashesType ??
             (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled),
         smartQuotesType = smartQuotesType ??
@@ -322,8 +323,11 @@ class MacosTextField extends StatefulWidget {
                     selectAll: true,
                     paste: true,
                   )),
+        _disabledColor = disabledColor,
+
         super(key: key);
 
+  Color? _disabledColor;
   /// Creates a borderless macOS-style text field.
   ///
   /// To provide a prefilled text entry, pass in a [TextEditingController] with
@@ -360,7 +364,7 @@ class MacosTextField extends StatefulWidget {
   ///  * [expands], to allow the widget to size itself to its parent's height.
   ///  * [maxLength], which discusses the precise meaning of "number of
   ///    characters" and how it may differ from the intuitive meaning.
-  const MacosTextField.borderless({
+  MacosTextField.borderless({
     Key? key,
     this.controller,
     this.focusNode,
@@ -417,6 +421,7 @@ class MacosTextField extends StatefulWidget {
     this.scrollPhysics,
     this.autofillHints,
     this.restorationId,
+    Color? disabledColor,
   })  : smartDashesType = smartDashesType ??
             (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled),
         smartQuotesType = smartQuotesType ??
@@ -454,6 +459,7 @@ class MacosTextField extends StatefulWidget {
                     selectAll: true,
                     paste: true,
                   )),
+        _disabledColor = disabledColor,
         super(key: key);
 
   /// Controls the text being edited.
@@ -1246,9 +1252,7 @@ class _MacosTextFieldState extends State<MacosTextField>
     final Color cursorColor =
         MacosDynamicColor.maybeResolve(widget.cursorColor, context) ??
             themeData.primaryColor;
-    final Color disabledColor =
-        MacosDynamicColor.resolve(_kDisabledBackground, context);
-
+    
     final Color? decorationColor =
         MacosDynamicColor.maybeResolve(widget.decoration?.color, context);
 
@@ -1273,13 +1277,17 @@ class _MacosTextFieldState extends State<MacosTextField>
             );
     }
 
+    final disabledColor = widget._disabledColor ?? MacosDynamicColor.resolve(_kDisabledBackground, context);
+
     final BoxDecoration? effectiveDecoration = widget.decoration?.copyWith(
       border: resolvedBorder,
-      color: enabled ? decorationColor : (decorationColor ?? disabledColor),
+      color: enabled 
+      ? decorationColor 
+      : (decorationColor ?? disabledColor),
     );
 
     final BoxDecoration? focusedDecoration = widget.focusedDecoration?.copyWith(
-      border: Border.all(width: 3.0, color: themeData.primaryColor),
+      border: Border.all(width: 1.0, color: themeData.primaryColor),
     );
 
     final focusedPlaceholderDecoration = focusedDecoration?.copyWith(
